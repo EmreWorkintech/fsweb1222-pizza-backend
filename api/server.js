@@ -8,6 +8,7 @@ const malzemeRouter = require('./malzemeler/malzemeler-router');
 const pizzaRouter = require('./pizzas/pizzas-router');
 const ratingRouter = require('./rating/rating-router');
 
+server.use(express.json());
 server.use('/api/auth', authRouter);
 server.use('/api/user', userRouter);
 server.use('/api/order', orderRouter);

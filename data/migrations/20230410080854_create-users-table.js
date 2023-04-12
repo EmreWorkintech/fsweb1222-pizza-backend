@@ -83,6 +83,13 @@ exports.up = function(knex) {
                             .inTable('pizzas')
                             .onDelete('NO ACTION')
                             .onUpdate('NO ACTION')
+                        tbl.integer('user_id')
+                            .unsigned()
+                            .notNullable()
+                            .references('id')
+                            .inTable('users')
+                            .onDelete('CASCADE')
+                            .onUpdate('CASCADE')
                         tbl.timestamps();
                     })
                     .createTable('orders_malzemeler', tbl=>{

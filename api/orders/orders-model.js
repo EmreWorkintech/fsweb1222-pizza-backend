@@ -2,14 +2,14 @@ const db = require('../../data/dbconfig');
 
 function getAll() {
     return db('orders as o')
-            .leftJoin('order_malzemeler as om', 'o.id', 'om.order_id')
+            .leftJoin('orders_malzemeler as om', 'o.id', 'om.order_id')
             .leftJoin('malzemeler as m', 'om.malzeme_id', 'm.id' )
-            .where('o.id', id); //object//collection, array
+            .select('o.id', 'o.status'); //TODO Emre
 }
 
 function getById(id) {
     return db('orders as o')
-            .leftJoin('order_malzemeler as om', 'o.id', 'om.order_id')
+            .leftJoin('orders_malzemeler as om', 'o.id', 'om.order_id')
             .leftJoin('malzemeler as m', 'om.malzeme_id', 'm.id' )
             .where('o.id', id)
             .first(); //object
@@ -20,9 +20,12 @@ async function create(payload) {
     await db.transaction(async trx => {
 
         //order ekle ve id'sini al.
-        [id] = await trx('orders').insert(payload); //updated row count
+        const orderPayload = {...payload};
+        delete orderPayload.malzemeler;
+        [id] = await trx('orders').insert(orderPayload); //updated row count
 
         //order. malzemelerini ekle
+
         if(payload.malzemeler && payload.malzemeler.length > 0 ) {  //malzemeler= [1,3,4]
             const orderMalzemeleri = payload.malzemeler.map(malzemeId=> {
                 const yeniMalzeme = {
@@ -59,7 +62,9 @@ async function update(payload, id) {
         }
 
         //order'ı update et.
-        count = await trx('orders').where('id', id).update(payload); //updated row count
+        const orderPayload = {...payload};
+        delete orderPayload.malzemeler;
+        count = await trx('orders').where('id', id).update(orderPayload); //updated row count
     })
 
     return count;

@@ -55,6 +55,7 @@ exports.seed = async function(knex) {
       boyut: 'Büyük',
       created_at:'2023-04-12 10:15:00',
       updated_at:'2023-04-12 10:15:00',
+      user_id: 2
       }
   ]);
 };

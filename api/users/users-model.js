@@ -14,6 +14,13 @@ function getById(id) {
             .first(); //object
 }
 
+function getByFilter(filter) {
+    return db('users as u')
+            .join('roles as r', 'u.role_id', 'r.id')
+            .where(filter)
+            .first(); //object
+}
+
 async function create(payload) {
     const [id] = await db('users').insert(payload);  //new malzeme ids
     return getById(id);
@@ -32,5 +39,6 @@ module.exports = {
     create,
     getById,
     remove,
+    getByFilter,
     update
 }
