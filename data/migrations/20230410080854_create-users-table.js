@@ -61,7 +61,7 @@ exports.up = function(knex) {
                             .notNullable();
                     })
                     .createTable('orders', tbl=> {
-                        tbl.uuid('id');
+                        tbl.increments();
                         tbl.string('hamur', 32)
                             .notNullable();
                         tbl.string('boyut', 32)
@@ -86,8 +86,12 @@ exports.up = function(knex) {
                         tbl.timestamps();
                     })
                     .createTable('orders_malzemeler', tbl=>{
-                        tbl.uuid('order_id')
-                            .notNullable();
+                        tbl.integer('order_id')
+                            .notNullable()
+                            .references('id')
+                            .inTable('orders')
+                            .onDelete('CASCADE')
+                            .onUpdate('CASCADE');
                         tbl.integer('malzeme_id')
                             .notNullable()
                             .unsigned()
