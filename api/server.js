@@ -16,4 +16,14 @@ server.use('/api/malzeme', malzemeRouter);
 server.use('/api/pizza', pizzaRouter);
 server.use('/api/rating', ratingRouter);
 
+server.use((err,req,res,next)=>{
+    console.log(err);
+    res
+        .status(err.status || 500)
+        .json({
+            message: err.message || "Server Error",
+            stack: err.stack || "No details added."
+        })
+})
+
 module.exports = server;
