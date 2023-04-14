@@ -90,7 +90,7 @@ exports.up = function(knex) {
                             .inTable('users')
                             .onDelete('CASCADE')
                             .onUpdate('CASCADE')
-                        tbl.timestamps();
+                        tbl.timestamps(knex.fn.now());
                     })
                     .createTable('orders_malzemeler', tbl=>{
                         tbl.integer('order_id')

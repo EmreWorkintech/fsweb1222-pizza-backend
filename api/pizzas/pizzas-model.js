@@ -2,14 +2,23 @@ const db = require('../../data/dbconfig');
 
 function getAll() {
     return db('pizzas as p')
-            .leftJoin('rating as r', 'p.id', 'r.pizza_id');  //collection, array
+            .leftJoin('rating as r', 'p.id', 'r.pizza_id')
+            .select('p.*')
+            .count('r.user_id as rate_count')
+            .avg('r.rate as avg_rate')
+            .groupBy('p.id');  //collection, array
 }
 
-function getById(id) {
-    return db('pizzas as p')
+async function getById(id) {
+
+    const pizza = await  db('pizzas as p')
             .leftJoin('rating as r', 'p.id', 'r.pizza_id')
+            .select('p.*')
+            .count('r.user_id as rate_count')
+            .avg('r.rate as avg_rate')
             .where('p.id', id)
-            .first(); //object
+            .groupBy('p.id'); //object
+    return pizza[0];
 }
 
 async function create(payload) {

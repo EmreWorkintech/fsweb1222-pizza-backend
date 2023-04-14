@@ -5,7 +5,7 @@
 exports.seed = async function(knex) {
   // Deletes ALL existing entries
   
-  
+  await knex('rating').truncate();
   await knex('malzemeler').truncate();
   await knex('orders').truncate();
   await knex('pizzas').truncate();
@@ -32,8 +32,8 @@ exports.seed = async function(knex) {
     {id: 13, malzeme_name: 'Kabak'}
   ]);
   await knex('users').insert([
-    {id: 1, name: 'Timur', surname: 'Egemen', email: 'timur@pizza.com', password: '123456', role_id: 1},
-    {id: 2, name: 'Emre', surname: 'Şahiner', email: 'emre@pizza.com', password: '123456', role_id: 2}
+    {id: 1, name: 'Timur', surname: 'Egemen', email: 'timur@pizza.com', password: '$2a$10$O2MAOlLYZcX0dVcIW8XqE.p6HqbA/Q5W7zTX0QBkcM/yt.AnC1OiW', role_id: 1},
+    {id: 2, name: 'Emre', surname: 'Şahiner', email: 'emre@pizza.com', password: '$2a$10$oFXN46bSG4KfaB7aoRZ0/OhgsAFYS923cbcsfFO70JSqqqpdomrW2', role_id: 2}
   ]);
   await knex('pizzas').insert([
     {id: 1, 
@@ -53,9 +53,23 @@ exports.seed = async function(knex) {
       adet: 1,
       status:'Hazırlanıyor',
       boyut: 'Büyük',
-      created_at:'2023-04-12 10:15:00',
-      updated_at:'2023-04-12 10:15:00',
       user_id: 2
       }
+  ]);
+  await knex('rating').insert([
+    {
+      pizza_id: 1,
+      user_id:2,
+      rate:4
+      },
+      {
+        pizza_id: 1,
+        user_id:1,
+        rate:5
+        },{
+          pizza_id: 2,
+          user_id:2,
+          rate:3
+          },
   ]);
 };

@@ -1,18 +1,41 @@
 const db = require('../../data/dbconfig');
 
-function getAll() {
-    return db('orders as o')
-            .leftJoin('orders_malzemeler as om', 'o.id', 'om.order_id')
-            .leftJoin('malzemeler as m', 'om.malzeme_id', 'm.id' )
-            .select('o.id', 'o.status'); //TODO Emre
+function formatOrder (orders) {
+    let malzeme
+    const final = orders.reduce((ecc, order)=> {
+       //malzeme doğru formatta lazım
+       if(order.malzeme_id) {
+            malzeme = {id: order.malzeme_id, malzeme_name: order.malzeme_name}
+       }
+       preOrder = ecc.find(item=>item.id==order.id)
+       if(preOrder) {//case 1 eski order ise malzemeyi  malzemeler içine ekleyeceğim.
+            preOrder.malzemeler.push(malzeme)
+       } else {//case 2 yeni order ise malzemeyi  malzemeler içine ekleyeceğim + yeni order ekleyeceğim.
+            delete order.malzeme_id;
+            delete order.malzeme_name;
+            order.malzemeler = malzeme ? [malzeme] : [];
+            ecc.push(order);
+       }
+        return ecc;
+    },[])
+    return final;
 }
 
-function getById(id) {
-    return db('orders as o')
+async function getAll() {
+    const orders =  await db('orders as o')
             .leftJoin('orders_malzemeler as om', 'o.id', 'om.order_id')
             .leftJoin('malzemeler as m', 'om.malzeme_id', 'm.id' )
+            .select('o.*', 'm.id as malzeme_id', 'm.malzeme_name'); 
+    return formatOrder(orders);
+}
+
+async function getById(id) {
+    const orders =  await db('orders as o')
+            .leftJoin('orders_malzemeler as om', 'o.id', 'om.order_id')
+            .leftJoin('malzemeler as m', 'om.malzeme_id', 'm.id' )
+            .select('o.*', 'm.id as malzeme_id', 'm.malzeme_name')
             .where('o.id', id)
-            .first(); //object
+    return formatOrder(orders)[0];
 }
 
 async function create(payload) {

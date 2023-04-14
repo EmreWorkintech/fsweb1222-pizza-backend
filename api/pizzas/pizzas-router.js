@@ -1,7 +1,9 @@
 const router = require('express').Router();
+const Pizza = require('./pizzas-model');
 
-router.get('/', (req,res)=> {
-    res.json('get all pizzas')
+router.get('/', async (req,res)=> {
+    const pizzas = await Pizza.getAll();
+    res.json(pizzas);
 })
 
 router.get('/:id', (req,res)=> {
